@@ -66,8 +66,8 @@ class burger {
     this.size = size;
     this.stuffing = stuffing;
     this.totalPrice = this.stuffing.price;
+    this.totalCalories = this.stuffing.calories;
     this.toppingsList = [];
-    this.calories = this.stuffing.calories;
   }
 
   addTopping(...topping) {
@@ -96,8 +96,8 @@ class burger {
   }
 
   showCalories() {
-    this.toppingsList.forEach(topping => { this.calories += (topping.amount * topping.calories); });
-    console.log(this.calories);
+    this.toppingsList.forEach(topping => { this.totalCalories += (topping.amount * topping.calories); });
+    console.log(this.totalCalories);
   }
 }
 

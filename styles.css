@@ -14,15 +14,26 @@
     margin: 10px 10px;
 }
 
-.cart-button {
+.cart {
+    color: #906df1;
+    margin: 0 0 20px 0;
+}
+
+.cart-button, .item-button-add, .item-button-rem {
     min-height: 30px;
     min-width: 40px;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color:cornsilk;
     text-transform: uppercase;
     text-align: center;
     color: #906df1;
     border: 3px solid #906df1;
     font-weight: bold;
-    margin: 0 0 20px 0;
-  }
+    margin: 0 5px 20px 0;
+}
+
+.cart-button:hover, .item-button-add:hover, .item-button-rem:hover {
+    background-color: crimson;
+    border: 3px solid crimson;
+    color: white;
+}

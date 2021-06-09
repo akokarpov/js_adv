@@ -1,122 +1,97 @@
-// 1.	Добавьте пустые классы для Корзины товаров и Элемента корзины товаров. Продумайте, какие методы понадобятся для работы с этими сущностями.
+// 1. Добавьте в соответствующие классы методы добавления товара в корзину, удаления товара из корзины и получения списка товаров корзины. Добавить кнопку "Добавить в корзину" для товаров из каталога, чтобы при нажатии ваш товар попадал в корзину.
+// 2*. Изучить EventLoop в JavaScript
 
-// 2. Добавьте для GoodsList метод, определяющий суммарную стоимость всех товаров.
+const API_URL =
+  "https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses";
 
 class goodsItem {
-  constructor(img = "", title = "", amount = 0, price = 0, coupon = "") {
-    this.img = img;
+  constructor(title, price, id) {
     this.title = title;
-    this.amount = amount;
     this.price = price;
-    this.coupon = coupon;
+    this.id = id;
+  }
+  render() {
+    return `<div class="goods-item" itemId=${this.id}><img src="https://picsum.photos/110" alt="img"><h3>${this.title}</h3><p>${this.price} руб.</p><button class="item-button-add" type="button">&#43;</button><button class="item-button-rem" type="button">&mdash;</button></div>`;
+  }
+}
+
+class goodsList {
+  constructor() {
+    this.goods = [];
   }
 
-  addAmount() { this.amount += 1; }
+  async fetchGoods() {
+    const response = await fetch(`${API_URL}/catalogData.json`);
+    if (response.ok) {
+      this.goods = await response.json();
+      console.log(this.goods);
+    } else {
+      alert("error connecting to server");
+    }
+  }
 
-  removeAmount() { if (this.amount > 0) { this.amount -= 1 }; }
+  render() {
+    let listHtml = "";
+    this.goods.forEach((good) => {
+      const item = new goodsItem(
+        good.product_name,
+        good.price,
+        good.id_product,
+      );
+      listHtml += item.render();
+    });
+    document.querySelector(".goods-list").innerHTML = listHtml;
+  }
 }
 
 class basket {
   constructor() {
-    this.goodsList = [];
+    this.goods = [];
     this.totalPrice = 0;
   }
 
-  addToBasket(goodsItem) {
-    this.goodsList.push(goodsItem);
+  add(item) {
+    this.goods.push(item);
+    this.updatePrice();
   }
 
-  fetchGoodsList() {
-    this.goodsList = [
-      { img: "https://picsum.photos/110?random=1", title: 'Shirt', amount: 1, price: 150, coupon: "" },
-      { img: "https://picsum.photos/110?random=2", title: 'Socks', amount: 1, price: 50, coupon: "" },
-      { img: "https://picsum.photos/110?random=3", title: 'Jacket', amount: 5, price: 350, coupon: "" },
-      { img: "https://picsum.photos/110?random=4", title: 'Shoes', amount: 3, price: 250, coupon: "" },
-    ];
-  }
-
-  updateTotalPrice() {
-    this.goodsList.forEach(element => { this.totalPrice += (element.amount * element.price); });
-    console.log(this.totalPrice);
-  }
-
-  renderGoodsList() {
-    let list = this.goodsList.map(obj =>
-      `<div class="goods-item"><img src="${obj.img}" alt="img"><h3>${obj.title}</h3><p>${obj.amount}</p><p>${obj.price}</p><h3>${obj.amount * obj.price}</h3></div>`).join("");
-    document.querySelector('.goods-list').innerHTML = list;
-  }
-}
-
-
-const toppings = [
-  { name: "pepper", price: 5, amount: 1, calories: 0 },
-  { name: "mayonese", price: 15, amount: 1, calories: 10 },
-  { name: "ketchup", price: 10, amount: 1, calories: 5 }
-];
-
-const stuffings = [
-  { name: "meat", price: 100, calories: 120 },
-  { name: "cheese", price: 60, calories: 100 },
-  { name: "potato", price: 50, calories: 80 }
-];
-
-// 3. Напишите программу, рассчитывающую стоимость и калорийность гамбургера.
-class burger {
-  constructor(size = "big", stuffing) {
-    this.size = size;
-    this.stuffing = stuffing;
-    this.totalPrice = this.stuffing.price;
-    this.totalCalories = this.stuffing.calories;
-    this.toppingsList = [];
-  }
-
-  addTopping(...topping) {
-    this.toppingsList.push(...topping)
-  }
-
-  removeTopping(topping) {
-    if (this.toppingsList.includes(topping)) {
-      const index = this.toppingsList.indexOf(topping);
-      this.toppingsList.splice(index, 1)
+  remove(item) {
+    if (this.goods.includes(item)) {
+      const i = this.goods.indexOf(item);
+      this.goods.splice(i, 1);
+      this.updatePrice();
     }
   }
 
-  showToppings() {
-    for (let topping of this.toppingsList) {
-      console.log(topping.name)
-    }
+  updatePrice() {
+    this.totalPrice = 0;
+    this.goods.forEach(element => { this.totalPrice += element.price; });
+    this.render();
+    console.log(this.goods, this.totalPrice);
   }
 
-  showSize() { console.log(this.size) }
-  showStuffing() { console.log(this.stuffing.name) }
-
-  showPrice() {
-    this.toppingsList.forEach(topping => { this.totalPrice += (topping.amount * topping.price); });
-    console.log(this.totalPrice);
-  }
-
-  showCalories() {
-    this.toppingsList.forEach(topping => { this.totalCalories += (topping.amount * topping.calories); });
-    console.log(this.totalCalories);
+  render() {
+    document.querySelector(".cart").innerHTML = `Общая стоимость: ${this.totalPrice} руб.`;
   }
 }
 
+const init = async () => {
+  const goodsListObj = new goodsList();
+  await goodsListObj.fetchGoods();
+  goodsListObj.render();
+  const basketObj = new basket();
+  const btnAdd = document.getElementsByClassName('item-button-add');
+  const btnRem = document.getElementsByClassName('item-button-rem');
+  basketObj.render();
 
-const init = () => {
-  const basketObj = new basket;
-  basketObj.fetchGoodsList();
-  basketObj.updateTotalPrice();
-  basketObj.renderGoodsList();
-
-  const burgerObj = new burger("small", stuffings[0]);
-  burgerObj.addTopping(toppings[0], toppings[1], toppings[2]);
-  burgerObj.showSize();
-  burgerObj.showStuffing();
-  burgerObj.showToppings();
-  burgerObj.showCalories();
-  burgerObj.showPrice();
-  burgerObj.removeTopping(toppings[0]);
-  burgerObj.showToppings();
+  for (let i = 0; i < btnAdd.length; i++) {
+    btnAdd[i].addEventListener("click", function () {
+      basketObj.add(goodsListObj.goods[i]);
+    });
+    btnRem[i].addEventListener("click", function () {
+      basketObj.remove(goodsListObj.goods[i]);
+    });
+  }
 }
 
 window.onload = init

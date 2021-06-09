@@ -1,0 +1,22 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 200px;   
+}
+
+.invalid {
+    border: 3px solid lightcoral;
+}
+
+.valid {
+    border: 3px solid limegreen;
+}
+
+.error {
+    background-color: lightcoral;
+    display: block;
+}
+
+.hidden {
+    display: none;
+}

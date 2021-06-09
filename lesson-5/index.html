@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>eShop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <header>
+      <input type="text" class="goods-search" v-model="searchLine">
+      <button class="search-button" type="button">Искать</button>
+      <button class="cart-button" type="button">Корзина</button>
+    </header>
+
+    <main>
+      <h2>Catalogue</h2>
+      <div class="goods-list">
+        <h3 v-if="goods.length === 0 || filteredGoods.length === 0">Sorry nothing is found!</h3>
+        <div v-if="goods.length > 0" class="goods-item" v-for="good in filteredGoods">
+          <img src="https://picsum.photos/110" alt="img">
+          <h5>{{good.id_product}}</h5>
+          <h3>{{good.product_name}}</h3>
+          <p>{{good.price}} руб.</p>
+          <button class="item-button-add" type="button" @click="addToBasket">&#43;</button>
+          <button class="item-button-rem" type="button" @click="removeFromBasket">&mdash;</button>
+        </div>
+      </div>
+
+      <h2 v-if="basket.length > 0">Your cart. Total checkout: {{totalPrice}} руб.</h2>
+      <div v-if="basket.length > 0" class="cart">
+        <div class="goods-item" v-for="good in basket">
+          <img src="https://picsum.photos/110" alt="img">
+          <h5>{{good.id_product}}</h5>
+          <h3>{{good.product_name}}</h3>
+          <p>{{good.price}} руб.</p>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>

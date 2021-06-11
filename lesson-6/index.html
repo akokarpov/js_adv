@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>eShop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <header>
+      <!-- vue comp search -->
+      <search v-model="searchLine"></search>
+      <button class="search-button" type="button">Искать</button>
+      <button class="cart-button" type="button">Корзина</button>
+    </header>
+
+    <!-- vue comp calatogue -->
+    <catalogue :goods="goods" :filtered-goods="filteredGoods" :add-to-basket="addToBasket"
+      :remove-from-basket="removeFromBasket"></catalogue>
+
+    <!-- vue comp error message -->
+    <serror :goods="goods"></serror>
+
+    <!-- vue comp basket -->
+    <basketcomp :basket="basket" :total-price="totalPrice"></basketcomp>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
